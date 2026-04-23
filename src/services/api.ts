@@ -22,4 +22,15 @@ api.interceptors.request.use(
   }
 );
 
+export const getProducts = async (params: any = {}) => {
+  const query = new URLSearchParams(params).toString();
+  const response = await api.get(`/products?${query}`);
+  return response.data;
+};
+
+export const getProductById = async (id: string) => {
+  const response = await api.get(`/products/${id}`);
+  return response.data;
+};
+
 export default api;

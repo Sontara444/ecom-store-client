@@ -4,6 +4,11 @@ import React from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Star, ShoppingCart, Heart, Eye } from 'lucide-react';
+import { useDispatch, useSelector } from 'react-redux';
+import { addToCart } from '@/redux/slices/cartSlice';
+import { toggleWishlist } from '@/redux/slices/wishlistSlice';
+import { RootState } from '@/redux/store';
+import toast from 'react-hot-toast';
 
 interface Product {
   _id: string;
@@ -15,6 +20,7 @@ interface Product {
   numReviews: number;
   images: { url: string }[];
   category: string;
+  stock: number;
 }
 
 interface ProductCardProps {
@@ -22,7 +28,37 @@ interface ProductCardProps {
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
+  const dispatch = useDispatch();
+  const { wishlistItems } = useSelector((state: RootState) => state.wishlist);
+  const isWishlisted = wishlistItems.some((x) => x._id === product._id);
+  
   const discountedPrice = Math.round(product.price * (1 - product.discount / 100));
+
+  const handleToggleWishlist = (e: React.MouseEvent) => {
+    e.preventDefault();
+    dispatch(toggleWishlist({
+      _id: product._id,
+      title: product.title,
+      brand: product.brand,
+      price: product.price,
+      image: product.images[0]?.url
+    }));
+    toast.success(isWishlisted ? 'Removed from wishlist' : 'Added to wishlist!');
+  };
+
+  const handleAddToCart = () => {
+    dispatch(addToCart({
+      _id: product._id,
+      title: product.title,
+      brand: product.brand,
+      price: product.price,
+      discount: product.discount,
+      image: product.images[0]?.url,
+      quantity: 1,
+      stock: product.stock
+    }));
+    toast.success(`${product.title} added to cart!`);
+  };
 
   return (
     <motion.div
@@ -54,8 +90,11 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
            <Link href={`/products/${product._id}`} className="p-3 bg-white rounded-2xl text-slate-900 hover:bg-primary hover:text-white transition-all transform translate-y-4 group-hover:translate-y-0 duration-500 shadow-xl">
              <Eye className="w-5 h-5" />
            </Link>
-           <button className="p-3 bg-white rounded-2xl text-slate-900 hover:bg-pink-500 hover:text-white transition-all transform translate-y-4 group-hover:translate-y-0 duration-700 shadow-xl">
-             <Heart className="w-5 h-5" />
+           <button 
+             onClick={handleToggleWishlist}
+             className={`p-3 rounded-2xl transition-all transform translate-y-4 group-hover:translate-y-0 duration-700 shadow-xl ${isWishlisted ? 'bg-pink-500 text-white' : 'bg-white text-slate-900 hover:bg-pink-500 hover:text-white'}`}
+           >
+             <Heart className={`w-5 h-5 ${isWishlisted ? 'fill-current' : ''}`} />
            </button>
         </div>
       </div>
@@ -93,7 +132,10 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
               ${discountedPrice}
             </span>
           </div>
-          <button className="text-[10px] font-black uppercase tracking-[0.2em] text-primary hover:tracking-[0.3em] transition-all">
+          <button 
+            onClick={handleAddToCart}
+            className="text-[10px] font-black uppercase tracking-[0.2em] text-primary hover:tracking-[0.3em] transition-all"
+          >
             Quick Add +
           </button>
         </div>

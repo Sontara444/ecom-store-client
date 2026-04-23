@@ -4,6 +4,7 @@ import "./globals.css";
 import StoreProvider from "@/redux/StoreProvider";
 import { Toaster } from "react-hot-toast";
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 import AuthInit from "@/components/AuthInit";
 
 const inter = Inter({ 
@@ -36,6 +37,7 @@ export default function RootLayout({
           <main className="flex-grow">
             {children}
           </main>
+          <Footer />
         </StoreProvider>
       </body>
     </html>
