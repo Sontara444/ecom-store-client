@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation';
 import api from '@/services/api';
 import Skeleton from '@/components/Skeleton';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Edit, Trash2, Search, Package, ArrowRight, ShieldAlert, X, Upload } from 'lucide-react';
+import { Plus, Edit, Trash2, Search, Package, ArrowRight, ShieldAlert, X, Upload, Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 export default function AdminProductsPage() {
@@ -17,6 +17,7 @@ export default function AdminProductsPage() {
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState<any>(null);
+  const [uploadingImage, setUploadingImage] = useState(false);
 
   // Form states
   const [title, setTitle] = useState('');
@@ -76,6 +77,30 @@ export default function AdminProductsPage() {
     setStock('');
     setDiscount('0');
     setImageUrl('');
+  };
+
+  const uploadFileHandler = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append('images', file);
+
+    setUploadingImage(true);
+    try {
+      const { data } = await api.post('/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      // Assuming the backend returns an array of uploaded image objects
+      setImageUrl(data[0]?.url || '');
+      toast.success('Image successfully securely hosted');
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || 'Image upload failed');
+    } finally {
+      setUploadingImage(false);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -261,7 +286,26 @@ export default function AdminProductsPage() {
                      </div>
                      <div className="space-y-2">
                         <label className="text-[10px] font-black uppercase tracking-widest text-secondary ml-1">Image Interface URL</label>
-                        <input required value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} className="w-full bg-slate-50 border-0 rounded-2xl py-4 px-6 outline-none focus:ring-1 focus:ring-primary/20 transition-all font-medium" placeholder="https://..." />
+                        <div className="flex space-x-2">
+                          <input required value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} className="flex-1 bg-slate-50 border-0 rounded-2xl py-4 px-6 outline-none focus:ring-1 focus:ring-primary/20 transition-all font-medium" placeholder="https://..." />
+                          <input
+                            type="file"
+                            id="image-upload"
+                            className="hidden"
+                            accept="image/*"
+                            onChange={uploadFileHandler}
+                          />
+                          <label
+                            htmlFor="image-upload"
+                            className="bg-indigo-50 hover:bg-indigo-100 text-indigo-500 rounded-2xl px-6 flex items-center justify-center cursor-pointer transition-all"
+                          >
+                            {uploadingImage ? (
+                              <Loader2 className="w-5 h-5 animate-spin" />
+                            ) : (
+                              <Upload className="w-5 h-5" />
+                            )}
+                          </label>
+                        </div>
                      </div>
                      <div className="space-y-2 col-span-2">
                         <label className="text-[10px] font-black uppercase tracking-widest text-secondary ml-1">Specifications/Description</label>
