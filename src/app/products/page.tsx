@@ -69,34 +69,34 @@ function ProductListingContent() {
   };
 
   return (
-    <div className="min-h-screen bg-background pt-32 pb-20 px-6 md:px-12">
+    <div className="min-h-screen bg-white pt-32 pb-24 px-6 md:px-12">
       <div className="max-w-7xl mx-auto">
         {/* Header Area */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-8">
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-8 border-b border-gray-100 pb-8">
           <div>
-            <h1 className="text-4xl md:text-6xl font-black tracking-tighter mb-4">
-              OUR <span className="gradient-text">COLLECTION</span>
+            <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-black mb-3">
+              Shop Collection
             </h1>
-            <p className="text-secondary font-medium tracking-wide">
-              Showing {products.length} refined essentials for your lifestyle.
+            <p className="text-gray-500 font-medium">
+              Showing {products.length} refined essentials.
             </p>
           </div>
 
           <div className="flex items-center space-x-4">
             <button 
               onClick={() => setIsFilterOpen(true)}
-              className="md:hidden glass px-6 py-3 rounded-2xl flex items-center space-x-2 font-bold text-sm"
+              className="md:hidden border border-gray-200 px-6 py-2.5 flex items-center space-x-2 font-medium text-sm text-black hover:bg-gray-50 transition-colors"
             >
               <Filter className="w-4 h-4" />
               <span>Filters</span>
             </button>
 
-            <div className="hidden md:flex items-center glass px-6 py-3 rounded-2xl space-x-4 border-white/40">
-              <SlidersHorizontal className="w-4 h-4 text-indigo-500" />
+            <div className="hidden md:flex items-center border border-gray-200 px-6 py-2.5 space-x-4 hover:border-gray-300 transition-colors bg-white">
+              <SlidersHorizontal className="w-4 h-4 text-black" strokeWidth={1.5} />
               <select 
                 value={sort}
                 onChange={(e) => updateFilters({ sort: e.target.value })}
-                className="bg-transparent text-sm font-bold outline-none cursor-pointer"
+                className="bg-transparent text-sm font-medium text-black outline-none cursor-pointer"
               >
                 {SORT_OPTIONS.map((opt) => (
                   <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -108,17 +108,17 @@ function ProductListingContent() {
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-12">
           {/* Desktop Sidebar */}
-          <aside className="hidden lg:block space-y-10 sticky top-32 h-fit">
-            <div className="glass p-8 rounded-[2rem] border-white/50 space-y-10">
+          <aside className="hidden lg:block space-y-10 sticky top-32 h-fit pr-8">
+            <div className="space-y-12">
               {/* Category */}
               <div>
-                <h3 className="text-xs font-black uppercase tracking-[0.3em] text-secondary mb-6">Discovery</h3>
-                <div className="space-y-4">
+                <h3 className="text-xs font-bold uppercase tracking-widest text-black mb-6">Categories</h3>
+                <div className="space-y-3">
                   {CATEGORIES.map((cat) => (
                     <button
                       key={cat}
                       onClick={() => updateFilters({ category: cat })}
-                      className={`block w-full text-left text-sm font-bold tracking-wide transition-all ${category === cat ? 'text-primary' : 'text-secondary hover:text-foreground'}`}
+                      className={`block w-full text-left text-sm font-medium transition-all ${category === cat ? 'text-black font-semibold' : 'text-gray-500 hover:text-black'}`}
                     >
                       {cat}
                     </button>
@@ -128,21 +128,21 @@ function ProductListingContent() {
 
               {/* Price Range */}
               <div>
-                <h3 className="text-xs font-black uppercase tracking-[0.3em] text-secondary mb-6">Price Range</h3>
+                <h3 className="text-xs font-bold uppercase tracking-widest text-black mb-6">Price Range</h3>
                 <div className="grid grid-cols-2 gap-4">
                   <input
                     type="number"
                     placeholder="Min"
                     value={minPrice}
                     onChange={(e) => updateFilters({ minPrice: e.target.value })}
-                    className="bg-white/50 border border-slate-100 rounded-xl py-2 px-4 text-xs font-bold outline-none focus:ring-1 focus:ring-primary/20 transition-all"
+                    className="w-full bg-transparent border-b border-gray-200 py-2 text-sm font-medium outline-none focus:border-black transition-colors text-black placeholder:text-gray-400"
                   />
                   <input
                     type="number"
                     placeholder="Max"
                     value={maxPrice}
                     onChange={(e) => updateFilters({ maxPrice: e.target.value })}
-                    className="bg-white/50 border border-slate-100 rounded-xl py-2 px-4 text-xs font-bold outline-none focus:ring-1 focus:ring-primary/20 transition-all"
+                    className="w-full bg-transparent border-b border-gray-200 py-2 text-sm font-medium outline-none focus:border-black transition-colors text-black placeholder:text-gray-400"
                   />
                 </div>
               </div>
@@ -150,7 +150,7 @@ function ProductListingContent() {
               {/* Reset Filters */}
               <button 
                 onClick={() => router.push('/products')}
-                className="w-full py-4 text-[10px] font-black uppercase tracking-[0.3em] text-secondary hover:text-primary transition-all border-t border-slate-100 pt-8"
+                className="w-full py-4 text-xs font-bold uppercase tracking-widest text-gray-400 hover:text-black transition-colors border-t border-gray-100"
               >
                 Clear All
               </button>
@@ -163,9 +163,9 @@ function ProductListingContent() {
               <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8">
                 {[1, 2, 3, 4, 5, 6].map((i) => (
                   <div key={i} className="space-y-4">
-                    <Skeleton className="aspect-[4/5] rounded-[2rem]" />
-                    <Skeleton className="h-4 w-1/2" />
-                    <Skeleton className="h-6 w-full" />
+                    <Skeleton className="aspect-[4/5] rounded-none bg-gray-100" />
+                    <Skeleton className="h-4 w-1/2 bg-gray-100" />
+                    <Skeleton className="h-6 w-full bg-gray-100" />
                   </div>
                 ))}
               </div>
@@ -176,34 +176,32 @@ function ProductListingContent() {
                 ))}
               </div>
             ) : (
-              <div className="flex flex-col items-center justify-center py-20 text-center">
-                <div className="w-20 h-20 bg-indigo-50 rounded-full flex items-center justify-center mb-6">
-                  <Search className="w-10 h-10 text-indigo-500/20" />
-                </div>
-                <h2 className="text-2xl font-black mb-2 tracking-tight">No products found</h2>
-                <p className="text-secondary font-medium">Try adjusting your filters or search keywords.</p>
+              <div className="flex flex-col items-center justify-center py-32 text-center border border-gray-100 bg-gray-50">
+                <Search className="w-8 h-8 text-gray-300 mb-4" strokeWidth={1} />
+                <h2 className="text-xl font-medium text-black mb-2">No products found</h2>
+                <p className="text-sm text-gray-500">Try adjusting your filters or search keywords.</p>
               </div>
             )}
 
             {/* Pagination Controls */}
             {pages > 1 && (
-              <div className="mt-16 flex justify-center items-center space-x-4">
+              <div className="mt-20 flex justify-center items-center space-x-6 border-t border-gray-100 pt-8">
                  <button 
                    disabled={Number(searchParams.get('page')) <= 1}
                    onClick={() => updateFilters({ page: (Number(searchParams.get('page')) || 1) - 1 })}
-                   className="glass px-6 py-3 rounded-xl text-xs font-bold disabled:opacity-50"
+                   className="text-sm font-medium text-black disabled:opacity-30 disabled:cursor-not-allowed hover:opacity-60 transition-opacity uppercase tracking-widest"
                  >
                    Previous
                  </button>
-                 <span className="text-sm font-black tracking-widest px-4">
+                 <span className="text-sm font-semibold text-black">
                     {searchParams.get('page') || 1} / {pages}
                  </span>
                  <button 
                    disabled={Number(searchParams.get('page')) >= pages}
                    onClick={() => updateFilters({ page: (Number(searchParams.get('page')) || 1) + 1 })}
-                   className="glass px-6 py-3 rounded-xl text-xs font-bold disabled:opacity-50"
+                   className="text-sm font-medium text-black disabled:opacity-30 disabled:cursor-not-allowed hover:opacity-60 transition-opacity uppercase tracking-widest"
                  >
-                   Next Page
+                   Next
                  </button>
               </div>
             )}
@@ -220,32 +218,31 @@ function ProductListingContent() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsFilterOpen(false)}
-              className="fixed inset-0 bg-black/20 backdrop-blur-sm z-[100]"
+              className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[100] lg:hidden"
             />
             <motion.div
               initial={{ x: '100%' }}
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="fixed top-0 right-0 bottom-0 w-[80%] max-w-sm bg-white z-[101] shadow-2xl p-8"
+              className="fixed top-0 right-0 bottom-0 w-[85%] max-w-sm bg-white z-[101] shadow-2xl p-8 lg:hidden flex flex-col"
             >
-              <div className="flex justify-between items-center mb-10">
-                <h2 className="text-2xl font-black tracking-tighter">Filters</h2>
-                <button onClick={() => setIsFilterOpen(false)} className="p-2 hover:bg-slate-100 rounded-full">
-                  <X className="w-5 h-5 text-secondary" />
+              <div className="flex justify-between items-center mb-10 pb-6 border-b border-gray-100">
+                <h2 className="text-xl font-bold text-black">Filters</h2>
+                <button onClick={() => setIsFilterOpen(false)} className="p-2 -mr-2 text-gray-400 hover:text-black">
+                  <X className="w-5 h-5" strokeWidth={1.5} />
                 </button>
               </div>
 
-              {/* Mobile Mobile Filters could be a subset of sidebar */}
-              <div className="space-y-12">
+              <div className="space-y-10 flex-grow overflow-y-auto">
                  <div>
-                    <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-secondary mb-6">Categories</h3>
-                    <div className="flex flex-wrap gap-2">
+                    <h3 className="text-xs font-bold uppercase tracking-widest text-black mb-6">Categories</h3>
+                    <div className="flex flex-col space-y-4">
                        {CATEGORIES.map(cat => (
                          <button 
                            key={cat}
                            onClick={() => { updateFilters({ category: cat }); setIsFilterOpen(false); }}
-                           className={`px-4 py-2 rounded-full text-xs font-bold transition-all ${category === cat ? 'bg-primary text-white shadow-lg shadow-indigo-500/20' : 'bg-slate-50 text-secondary'}`}
+                           className={`text-left text-sm font-medium transition-colors ${category === cat ? 'text-black font-semibold' : 'text-gray-500'}`}
                          >
                            {cat}
                          </button>
@@ -253,15 +250,14 @@ function ProductListingContent() {
                     </div>
                  </div>
 
-                 {/* Sorting Mobile */}
                  <div>
-                    <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-secondary mb-6">Sort By</h3>
-                    <div className="space-y-4">
+                    <h3 className="text-xs font-bold uppercase tracking-widest text-black mb-6">Sort By</h3>
+                    <div className="flex flex-col space-y-4">
                        {SORT_OPTIONS.map(opt => (
                          <button 
                            key={opt.value}
                            onClick={() => { updateFilters({ sort: opt.value }); setIsFilterOpen(false); }}
-                           className={`block w-full text-left py-2 font-bold tracking-wide transition-all ${sort === opt.value ? 'text-primary' : 'text-secondary'}`}
+                           className={`text-left text-sm font-medium transition-colors ${sort === opt.value ? 'text-black font-semibold' : 'text-gray-500'}`}
                          >
                            {opt.label}
                          </button>
@@ -270,10 +266,10 @@ function ProductListingContent() {
                  </div>
               </div>
 
-              <div className="absolute bottom-8 left-8 right-8">
+              <div className="pt-8 border-t border-gray-100 mt-auto">
                 <button 
                   onClick={() => setIsFilterOpen(false)}
-                  className="w-full btn-wow py-4"
+                  className="w-full bg-black text-white py-4 text-sm font-bold hover:bg-gray-900 transition-colors"
                 >
                   Apply Filters
                 </button>
@@ -289,7 +285,7 @@ function ProductListingContent() {
 // Ensure searchParams are handled inside Suspense
 export default function ProductsPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen pt-32 px-12 text-center font-bold">Loading Discovery Engine...</div>}>
+    <Suspense fallback={<div className="min-h-screen pt-32 px-12 text-center text-sm font-medium text-gray-500 bg-white">Loading Collection...</div>}>
       <ProductListingContent />
     </Suspense>
   );

@@ -5,7 +5,7 @@ import { useParams } from 'next/navigation';
 import { getProductById } from '@/services/api';
 import Skeleton from '@/components/Skeleton';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Star, ShoppingCart, Heart, ShieldCheck, Zap, ArrowLeft, Plus, Minus, MessageCircle } from 'lucide-react';
+import { Star, Heart, ArrowLeft, Plus, Minus, X } from 'lucide-react';
 import Link from 'next/link';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
@@ -59,7 +59,7 @@ export default function ProductDetailsPage() {
       quantity,
       stock: product.stock
     }));
-    toast.success('Inventory segment secured in cart');
+    toast.success('Added to cart');
   };
 
   const handleToggleWishlist = () => {
@@ -71,30 +71,30 @@ export default function ProductDetailsPage() {
       image: product.images[0]?.url
     }));
     if (isWishlisted) {
-      toast('Identity link removed from wishlist', { icon: '🗑️' });
+      toast('Removed from wishlist');
     } else {
-      toast.success('Masterpiece secured in wishlist');
+      toast.success('Added to wishlist');
     }
   };
 
   const submitReviewHandler = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!userInfo) {
-      toast.error('Identity authentication required to share experience');
+      toast.error('Sign in required to review');
       return;
     }
 
     setSubmittingReview(true);
     try {
       await api.post(`/products/${id}/reviews`, { rating, comment });
-      toast.success('Experience synchronized with ecosystem');
+      toast.success('Review submitted successfully');
       setShowReviewModal(false);
       setComment('');
       // Refresh product data
       const data = await getProductById(id as string);
       setProduct(data);
     } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Synchronization failure');
+      toast.error(err.response?.data?.message || 'Submission failed');
     } finally {
       setSubmittingReview(false);
     }
@@ -102,15 +102,15 @@ export default function ProductDetailsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen pt-32 px-6 md:px-12 max-w-7xl mx-auto">
+      <div className="min-h-screen pt-32 px-6 md:px-12 max-w-7xl mx-auto bg-white">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
-          <Skeleton className="aspect-square rounded-[3rem]" />
+          <Skeleton className="aspect-square bg-gray-50 rounded-none" />
           <div className="space-y-8">
-            <Skeleton className="h-4 w-1/4" />
-            <Skeleton className="h-10 w-3/4" />
-            <Skeleton className="h-6 w-1/2" />
-            <Skeleton className="h-32 w-full" />
-            <Skeleton className="h-16 w-full rounded-2xl" />
+            <Skeleton className="h-4 w-1/4 bg-gray-50" />
+            <Skeleton className="h-10 w-3/4 bg-gray-50" />
+            <Skeleton className="h-6 w-1/2 bg-gray-50" />
+            <Skeleton className="h-32 w-full bg-gray-50" />
+            <Skeleton className="h-16 w-full bg-gray-50" />
           </div>
         </div>
       </div>
@@ -119,9 +119,9 @@ export default function ProductDetailsPage() {
 
   if (!product) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center pt-20">
-        <h2 className="text-3xl font-black mb-4">Product Not Found</h2>
-        <Link href="/products" className="btn-wow">Return to Gallery</Link>
+      <div className="min-h-screen flex flex-col items-center justify-center pt-20 bg-white">
+        <h2 className="text-2xl font-medium mb-4 text-black">Product Not Found</h2>
+        <Link href="/products" className="border-b border-black text-black pb-1">Return to Shop</Link>
       </div>
     );
   }
@@ -129,20 +129,19 @@ export default function ProductDetailsPage() {
   const discountedPrice = Math.round(product.price * (1 - product.discount / 100));
 
   return (
-    <div className="min-h-screen bg-background pt-32 pb-20 px-6 md:px-12">
+    <div className="min-h-screen bg-white pt-32 pb-24 px-6 md:px-12">
       <div className="max-w-7xl mx-auto">
-        {/* Breadcrumbs / Back navigation */}
-        <Link href="/products" className="inline-flex items-center space-x-2 text-secondary hover:text-primary transition-all font-bold text-sm mb-12 group">
-          <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+        <Link href="/products" className="inline-flex items-center space-x-2 text-gray-500 hover:text-black transition-colors font-medium text-sm mb-12 group">
+          <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" strokeWidth={1.5} />
           <span>Back to Collection</span>
         </Link>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
           {/* Image Gallery */}
-          <div className="space-y-6">
+          <div className="space-y-6 lg:sticky lg:top-32">
             <motion.div 
               layoutId={`product-img-${product._id}`}
-              className="relative aspect-square rounded-[3rem] overflow-hidden bg-white luxury-border modern-shadow"
+              className="relative aspect-square overflow-hidden bg-gray-50 border border-gray-100"
             >
               <img 
                 src={product.images[selectedImage]?.url} 
@@ -150,8 +149,8 @@ export default function ProductDetailsPage() {
                 className="w-full h-full object-cover"
               />
               {product.discount > 0 && (
-                 <div className="absolute top-8 left-8 bg-pink-500 text-white text-xs font-black px-4 py-2 rounded-full shadow-2xl">
-                    LIMITED OFFER: -{product.discount}%
+                 <div className="absolute top-6 left-6 bg-black text-white text-xs font-medium px-3 py-1.5">
+                    -{product.discount}% OFF
                  </div>
               )}
             </motion.div>
@@ -163,7 +162,7 @@ export default function ProductDetailsPage() {
                   <button
                     key={i}
                     onClick={() => setSelectedImage(i)}
-                    className={`w-24 h-24 rounded-2xl flex-shrink-0 overflow-hidden border-2 transition-all ${selectedImage === i ? 'border-primary' : 'border-transparent opacity-60 hover:opacity-100'}`}
+                    className={`w-24 h-24 flex-shrink-0 overflow-hidden border transition-all ${selectedImage === i ? 'border-black' : 'border-transparent opacity-60 hover:opacity-100'}`}
                   >
                     <img src={img.url} alt="" className="w-full h-full object-cover" />
                   </button>
@@ -173,127 +172,114 @@ export default function ProductDetailsPage() {
           </div>
 
           {/* Product Info */}
-          <div className="space-y-10">
+          <div className="space-y-10 flex flex-col pt-4">
             <div>
-               <div className="flex items-center space-x-4 mb-4">
-                  <span className="text-xs font-black uppercase tracking-[0.3em] text-secondary">{product.brand}</span>
-                  <div className="h-1 w-1 bg-slate-300 rounded-full" />
-                  <span className="text-xs font-black uppercase tracking-[0.3em] text-primary">{product.category}</span>
+               <div className="flex items-center space-x-3 mb-4">
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400">{product.brand}</span>
                </div>
-               <h1 className="text-4xl md:text-6xl font-black tracking-tight mb-6">
+               <h1 className="text-3xl md:text-5xl font-medium tracking-tight mb-4 text-black">
                  {product.title}
                </h1>
                
-               <div className="flex items-center space-x-6">
-                  <div className="flex items-center space-x-2 bg-amber-50 px-3 py-1.5 rounded-full border border-amber-100">
-                    <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
-                    <span className="text-sm font-black text-amber-600">{product.rating}</span>
+               <div className="flex items-center space-x-4">
+                  <div className="flex items-center space-x-1">
+                    <Star className="w-4 h-4 fill-black text-black" />
+                    <span className="text-sm font-semibold text-black">{product.rating}</span>
                   </div>
-                  <span className="text-sm font-bold text-secondary">{product.numReviews} Verified Reviews</span>
+                  <span className="text-sm font-medium text-gray-500">({product.numReviews} Reviews)</span>
                </div>
             </div>
 
-            <div className="flex flex-col space-y-2">
+            <div className="flex flex-col space-y-1">
                {product.discount > 0 && (
-                 <span className="text-xl text-slate-400 font-bold line-through tracking-tight">${product.price}</span>
+                 <span className="text-lg text-gray-400 font-medium line-through">${product.price}</span>
                )}
                <div className="flex items-end space-x-4">
-                 <span className="text-5xl font-black text-foreground tracking-tighter">${discountedPrice}</span>
-                 <span className="text-xs font-black text-secondary uppercase tracking-[0.2em] mb-2">Inclusive of Taxes</span>
+                 <span className="text-4xl font-semibold text-black">${discountedPrice}</span>
                </div>
             </div>
 
-            <p className="text-base text-secondary leading-relaxed font-medium">
+            <p className="text-base text-gray-600 leading-relaxed font-medium">
                {product.description}
             </p>
 
-            <div className="h-[1px] bg-slate-100" />
+            <div className="h-[1px] bg-gray-100" />
 
             {/* Quantity Selector */}
             <div className="space-y-4">
-               <span className="text-xs font-black uppercase tracking-widest text-secondary">Adjust Quantity</span>
-               <div className="flex items-center space-x-4">
-                  <div className="flex items-center glass px-2 py-2 rounded-2xl border-white/50">
+               <span className="text-xs font-bold uppercase tracking-widest text-black">Quantity</span>
+               <div className="flex items-center space-x-6">
+                  <div className="flex items-center border border-gray-200">
                     <button 
                       onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                      className="p-2 hover:bg-white rounded-xl transition-all"><Minus className="w-4 h-4" /></button>
-                    <span className="w-12 text-center font-black text-lg">{quantity}</span>
+                      className="px-4 py-3 text-gray-500 hover:bg-gray-50 transition-colors"><Minus className="w-4 h-4" strokeWidth={1.5} /></button>
+                    <span className="w-12 text-center font-semibold text-sm text-black">{quantity}</span>
                     <button 
                       onClick={() => setQuantity(Math.min(product.stock, quantity + 1))}
-                      className="p-2 hover:bg-white rounded-xl transition-all"><Plus className="w-4 h-4" /></button>
+                      className="px-4 py-3 text-gray-500 hover:bg-gray-50 transition-colors"><Plus className="w-4 h-4" strokeWidth={1.5} /></button>
                   </div>
-                  <span className="text-xs font-bold text-secondary">
-                    {product.stock > 0 ? `${product.stock} units in stock` : 'Out of stock'}
+                  <span className="text-xs font-medium text-gray-500">
+                    {product.stock > 0 ? `${product.stock} available` : 'Out of stock'}
                   </span>
                </div>
             </div>
 
             {/* Action Buttons */}
-            <div className="flex flex-col sm:flex-row gap-6 pt-4">
+            <div className="flex flex-col sm:flex-row gap-4 pt-6">
                <button 
                  disabled={product.stock === 0}
                  onClick={handleAddToCart}
-                 className="btn-wow flex-1 py-5 text-lg group disabled:opacity-50"
+                 className="bg-black text-white hover:bg-gray-900 flex-1 py-4 text-sm font-semibold disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
                >
-                 <ShoppingCart className="mr-3 w-5 h-5" />
-                 Secure to Cart
+                 Add to Cart
                </button>
                <button 
                  onClick={handleToggleWishlist}
-                 className={`glass px-10 py-5 rounded-2xl font-black text-lg shadow-xl transition-all active:scale-95 group ${isWishlisted ? 'bg-pink-500 text-white' : 'hover:bg-pink-50 hover:text-pink-500 text-foreground'}`}
+                 className={`px-6 py-4 font-semibold text-sm transition-all border ${isWishlisted ? 'border-black text-black' : 'border-gray-200 text-gray-600 hover:border-black hover:text-black'}`}
                >
-                  <Heart className={`${isWishlisted ? 'fill-current' : 'group-hover:fill-pink-500'} transition-colors`} />
+                  <Heart className={`w-5 h-5 mx-auto ${isWishlisted ? 'fill-current' : ''}`} strokeWidth={1.5} />
                </button>
-            </div>
-
-            {/* Feature Highlights */}
-            <div className="grid grid-cols-2 gap-8 pt-10">
-               <div className="flex items-center space-x-4">
-                  <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center">
-                    <ShieldCheck className="w-5 h-5 text-indigo-500" />
-                  </div>
-                  <span className="text-xs font-bold text-secondary leading-tight">Authentic <br /> Guarantee</span>
-               </div>
-               <div className="flex items-center space-x-4">
-                  <div className="w-10 h-10 bg-pink-50 rounded-xl flex items-center justify-center">
-                    <Zap className="w-5 h-5 text-pink-500" />
-                  </div>
-                  <span className="text-xs font-bold text-secondary leading-tight">Priority <br /> Fulfillment</span>
-               </div>
             </div>
           </div>
         </div>
 
-        {/* Reviews Section Placeholder */}
-        <section className="mt-32 border-t border-slate-100 pt-32">
+        {/* Reviews Section */}
+        <section className="mt-32 pt-24 border-t border-gray-100">
            <div className="flex items-center justify-between mb-16">
-              <h2 className="text-4xl font-black tracking-tight">Voices of <span className="gradient-text">Experiences</span></h2>
+              <h2 className="text-2xl font-semibold tracking-tight text-black">Customer Reviews</h2>
               <button 
-                onClick={() => userInfo ? setShowReviewModal(true) : toast.error('Sign in to share your experience')}
-                className="glass px-8 py-3 rounded-xl font-bold text-sm hover:bg-white transition-all">Review Product</button>
+                onClick={() => userInfo ? setShowReviewModal(true) : toast.error('Sign in to leave a review')}
+                className="border-b border-black pb-0.5 text-sm font-semibold text-black hover:opacity-60 transition-opacity">Write a Review</button>
            </div>
            
            {product.reviews?.length > 0 ? (
-             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+             <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
                {product.reviews.map((review: any) => (
-                 <div key={review._id} className="glass p-10 rounded-[2.5rem] border-white/50 space-y-4">
+                 <div key={review._id} className="space-y-4">
                     <div className="flex justify-between items-start">
-                       <span className="font-bold text-slate-900">{review.name}</span>
-                       <div className="flex text-amber-400">
+                       <span className="font-semibold text-black">{review.name}</span>
+                       <div className="flex text-black">
                           {[...Array(5)].map((_, i) => (
-                            <Star key={i} className={`w-3 h-3 ${i < review.rating ? 'fill-current' : 'text-slate-100'}`} />
+                            <Star key={i} className={`w-3 h-3 ${i < review.rating ? 'fill-current' : 'text-gray-200'}`} />
                           ))}
                        </div>
                     </div>
-                    <p className="text-sm text-secondary font-medium leading-relaxed italic">"{review.comment}"</p>
-                    <span className="text-[10px] uppercase font-black text-slate-300 tracking-widest block pt-4">Verified Purchase — {new Date(review.createdAt).toLocaleDateString()}</span>
+                    <p className="text-sm text-gray-600 font-medium leading-relaxed">"{review.comment}"</p>
+                    <span className="text-[10px] uppercase font-bold text-gray-400 tracking-widest block pt-2">
+                      {new Date(review.createdAt).toLocaleDateString()}
+                    </span>
                  </div>
                ))}
              </div>
            ) : (
-             <div className="flex flex-col items-center py-20 text-center glass rounded-[3rem] border-white/20">
-                <MessageCircle className="w-12 h-12 text-indigo-500/20 mb-6" />
-                <p className="text-secondary font-bold tracking-wide">Become the first to shared your thoughts on this masterpiece.</p>
+             <div className="flex flex-col items-center py-24 text-center bg-gray-50 border border-gray-100">
+                <p className="text-gray-500 font-medium mb-4">No reviews yet.</p>
+                <button 
+                  onClick={() => userInfo ? setShowReviewModal(true) : toast.error('Sign in to leave a review')}
+                  className="text-sm font-semibold border-b border-black text-black pb-0.5"
+                >
+                  Be the first to review
+                </button>
              </div>
            )}
         </section>
@@ -302,55 +288,55 @@ export default function ProductDetailsPage() {
         <AnimatePresence>
           {showReviewModal && (
             <>
-              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowReviewModal(false)} className="fixed inset-0 bg-black/60 backdrop-blur-md z-[200]" />
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowReviewModal(false)} className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[200]" />
               <motion.div 
-                 initial={{ opacity: 0, scale: 0.9, y: 20 }}
-                 animate={{ opacity: 1, scale: 1, y: 0 }}
-                 exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                 className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg bg-white rounded-[3rem] p-12 z-[201] shadow-2xl"
+                 initial={{ opacity: 0, y: 20 }}
+                 animate={{ opacity: 1, y: 0 }}
+                 exit={{ opacity: 0, y: 20 }}
+                 className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg bg-white p-10 z-[201] shadow-2xl"
               >
-                 <div className="flex justify-between items-center mb-8">
-                    <h2 className="text-3xl font-black tracking-tighter text-foreground">SHARE <span className="text-primary">EXPERIENCE</span></h2>
-                    <button onClick={() => setShowReviewModal(false)} className="p-2 hover:bg-slate-100 rounded-full transition-all">
-                       <Plus className="w-6 h-6 text-secondary rotate-45" />
+                 <div className="flex justify-between items-center mb-8 border-b border-gray-100 pb-4">
+                    <h2 className="text-xl font-bold tracking-tight text-black">Write a Review</h2>
+                    <button onClick={() => setShowReviewModal(false)} className="text-gray-400 hover:text-black transition-colors">
+                       <X className="w-5 h-5" strokeWidth={1.5} />
                     </button>
                  </div>
 
                  <form onSubmit={submitReviewHandler} className="space-y-8">
                     <div className="space-y-4">
-                       <label className="text-[10px] font-black uppercase tracking-[0.3em] text-secondary ml-1">Satisfaction Rating</label>
-                       <div className="flex space-x-3">
+                       <label className="text-xs font-bold uppercase tracking-widest text-gray-500">Rating</label>
+                       <div className="flex space-x-2">
                           {[1, 2, 3, 4, 5].map((star) => (
                             <button
                               key={star}
                               type="button"
                               onClick={() => setRating(star)}
-                              className="focus:outline-none transition-transform active:scale-90"
+                              className="focus:outline-none transition-transform active:scale-95"
                             >
-                              <Star className={`w-8 h-8 ${star <= rating ? 'fill-amber-400 text-amber-400' : 'text-slate-200'}`} />
+                              <Star className={`w-6 h-6 ${star <= rating ? 'fill-black text-black' : 'text-gray-200'}`} />
                             </button>
                           ))}
                        </div>
                     </div>
 
                     <div className="space-y-4">
-                       <label className="text-[10px] font-black uppercase tracking-[0.3em] text-secondary ml-1">Detailed Narrative</label>
+                       <label className="text-xs font-bold uppercase tracking-widest text-gray-500">Your Review</label>
                        <textarea 
                          required
                          rows={4}
                          value={comment}
                          onChange={(e) => setComment(e.target.value)}
-                         className="w-full bg-slate-50 border-0 rounded-2xl py-4 px-6 outline-none focus:ring-1 focus:ring-primary/20 transition-all font-medium resize-none"
-                         placeholder="Describe your interaction with this artifact..."
+                         className="w-full bg-transparent border border-gray-200 p-4 outline-none focus:border-black transition-colors font-medium resize-none text-sm text-black placeholder:text-gray-400"
+                         placeholder="What did you like or dislike?"
                        />
                     </div>
 
                     <button 
                       type="submit" 
                       disabled={submittingReview}
-                      className="w-full btn-wow py-5 flex items-center justify-center space-x-3"
+                      className="w-full bg-black text-white py-4 font-semibold text-sm hover:bg-gray-900 transition-colors flex items-center justify-center disabled:opacity-50"
                     >
-                       {submittingReview ? <Plus className="w-6 h-6 animate-spin" /> : <span>Synchronize Review</span>}
+                       {submittingReview ? <span className="animate-pulse">Submitting...</span> : <span>Submit Review</span>}
                     </button>
                  </form>
               </motion.div>

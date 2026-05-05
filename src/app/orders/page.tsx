@@ -7,7 +7,7 @@ import { RootState } from '@/redux/store';
 import api from '@/services/api';
 import Skeleton from '@/components/Skeleton';
 import { motion } from 'framer-motion';
-import { Package, ArrowRight, Clock, CheckCircle2, ShoppingBag, Search } from 'lucide-react';
+import { Package, ArrowRight, Clock, CheckCircle2, ShoppingBag } from 'lucide-react';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
 
@@ -28,7 +28,7 @@ export default function OrdersPage() {
         const { data } = await api.get('/orders/myorders');
         setOrders(data);
       } catch (err: any) {
-        toast.error('Identity sync failed');
+        toast.error('Failed to load orders');
       } finally {
         setLoading(false);
       }
@@ -37,80 +37,69 @@ export default function OrdersPage() {
   }, [userInfo, router]);
 
   return (
-    <div className="min-h-screen bg-background pt-32 pb-20 px-6 md:px-12">
+    <div className="min-h-screen bg-white pt-32 pb-24 px-6 md:px-12">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-8">
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-8 border-b border-gray-100 pb-8">
           <div>
-             <div className="inline-flex items-center space-x-2 bg-indigo-50 px-4 py-2 rounded-full mb-4 border border-indigo-100">
-                <Package className="w-4 h-4 text-indigo-500" />
-                <span className="text-[10px] font-black uppercase tracking-widest text-indigo-600">Transit Protocols</span>
-             </div>
-             <h1 className="text-4xl md:text-6xl font-black tracking-tighter">
-               MY <span className="text-primary">SHIPMENTS</span>
+             <h1 className="text-3xl font-semibold tracking-tight text-black mb-2">
+               Order History
              </h1>
-          </div>
-          
-          <div className="flex items-center space-x-4">
-             <div className="glass px-6 py-3 rounded-2xl flex items-center space-x-3 text-secondary">
-                <Clock className="w-4 h-4" />
-                <span className="text-xs font-bold whitespace-nowrap">Updated Cycle: Real-time</span>
-             </div>
+             <p className="text-sm font-medium text-gray-500">View and track your recent purchases.</p>
           </div>
         </div>
 
         {loading ? (
           <div className="space-y-6">
             {[1, 2, 3].map((i) => (
-              <Skeleton key={i} className="h-40 w-full rounded-[2.5rem]" />
+              <Skeleton key={i} className="h-40 w-full rounded-none bg-gray-50" />
             ))}
           </div>
         ) : orders.length > 0 ? (
           <div className="space-y-6">
              {orders.map((order) => (
                <motion.div
-                 initial={{ opacity: 0, scale: 0.98 }}
-                 animate={{ opacity: 1, scale: 1 }}
+                 initial={{ opacity: 0, y: 10 }}
+                 animate={{ opacity: 1, y: 0 }}
                  key={order._id}
-                 className="glass p-8 md:p-12 rounded-[2.5rem] border-white/50 hover:shadow-2xl hover:shadow-indigo-500/10 transition-all group relative overflow-hidden"
+                 className="bg-white border border-gray-200 p-8 hover:border-black transition-colors group relative overflow-hidden"
                >
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/5 blur-3xl -z-10" />
                   
-                  <div className="flex flex-col md:flex-row justify-between gap-12 items-center md:items-center">
+                  <div className="flex flex-col md:flex-row justify-between gap-8 items-start md:items-center">
                      {/* Metadata */}
-                     <div className="flex items-center space-x-8 w-full md:w-auto">
-                        <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center luxury-border shadow-inner">
-                           <Package className="w-8 h-8 text-indigo-500/30" />
+                     <div className="flex items-center space-x-6 w-full md:w-auto">
+                        <div className="w-12 h-12 bg-gray-50 flex items-center justify-center flex-shrink-0">
+                           <Package className="w-5 h-5 text-gray-400 group-hover:text-black transition-colors" strokeWidth={1.5} />
                         </div>
                         <div>
-                           <p className="text-[10px] font-black uppercase tracking-widest text-secondary mb-1">IDENTIFIER: #{order._id.slice(-8).toUpperCase()}</p>
-                           <h3 className="text-xl font-black tracking-tighter">{new Date(order.createdAt).toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' })}</h3>
+                           <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1">Order #{order._id.slice(-8).toUpperCase()}</p>
+                           <h3 className="text-base font-semibold text-black">{new Date(order.createdAt).toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' })}</h3>
                         </div>
                      </div>
 
                      {/* Stats */}
                      <div className="grid grid-cols-2 md:grid-cols-3 gap-8 md:gap-16 w-full md:w-auto">
                         <div>
-                           <p className="text-[10px] font-black uppercase tracking-[0.2em] text-secondary mb-1">Value Sum</p>
-                           <p className="text-xl font-black">${order.totalPrice}</p>
+                           <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1">Total</p>
+                           <p className="text-base font-semibold text-black">${order.totalPrice}</p>
                         </div>
                         <div>
-                           <p className="text-[10px] font-black uppercase tracking-[0.2em] text-secondary mb-1">Status</p>
+                           <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1">Payment</p>
                            <div className="flex items-center space-x-2">
                               {order.isPaid ? (
-                                <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                                <CheckCircle2 className="w-4 h-4 text-green-600" strokeWidth={1.5} />
                               ) : (
-                                <Clock className="w-4 h-4 text-amber-500" />
+                                <Clock className="w-4 h-4 text-orange-500" strokeWidth={1.5} />
                               )}
-                              <span className={`text-xs font-black uppercase tracking-widest ${order.isPaid ? 'text-emerald-500' : 'text-amber-500'}`}>
-                                {order.isPaid ? 'AUTHENTICATED' : 'AWAITING PAY'}
+                              <span className={`text-xs font-semibold ${order.isPaid ? 'text-green-600' : 'text-orange-500'}`}>
+                                {order.isPaid ? 'PAID' : 'PENDING'}
                               </span>
                            </div>
                         </div>
                         <div className="hidden md:block">
-                           <p className="text-[10px] font-black uppercase tracking-[0.2em] text-secondary mb-1">Transit</p>
-                           <p className="text-xs font-black uppercase tracking-widest text-indigo-500">
-                             {order.isDelivered ? 'FINALIZED' : 'IN PROCESSING'}
+                           <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1">Status</p>
+                           <p className="text-xs font-semibold text-gray-600">
+                             {order.isDelivered ? 'DELIVERED' : 'PROCESSING'}
                            </p>
                         </div>
                      </div>
@@ -118,22 +107,22 @@ export default function OrdersPage() {
                      {/* Action */}
                      <Link 
                        href={`/orders/${order._id}`}
-                       className="w-full md:w-auto btn-wow py-4 px-8 flex items-center justify-center space-x-3 group"
+                       className="w-full md:w-auto border border-gray-200 py-3 px-6 flex items-center justify-center space-x-2 group-hover:border-black group-hover:bg-black group-hover:text-white transition-all text-sm font-semibold text-black"
                      >
-                        <span className="text-sm">Inspect Protocol</span>
-                        <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                        <span>View Details</span>
+                        <ArrowRight className="w-4 h-4" strokeWidth={1.5} />
                      </Link>
                   </div>
 
                   {/* Order Previews */}
-                  <div className="mt-8 pt-8 border-t border-slate-100 flex gap-4 overflow-hidden">
+                  <div className="mt-8 pt-6 border-t border-gray-100 flex gap-4 overflow-hidden">
                      {order.orderItems.slice(0, 4).map((item: any) => (
-                       <div key={item._id} className="w-12 h-12 rounded-xl bg-slate-50 overflow-hidden luxury-border opacity-60">
+                       <div key={item._id} className="w-12 h-16 bg-gray-50 overflow-hidden opacity-80 group-hover:opacity-100 transition-opacity">
                           <img src={item.image} alt="" className="w-full h-full object-cover" />
                        </div>
                      ))}
                      {order.orderItems.length > 4 && (
-                       <div className="w-12 h-12 rounded-xl bg-slate-50 flex items-center justify-center text-[10px] font-black text-secondary">
+                       <div className="w-12 h-16 bg-gray-50 flex items-center justify-center text-[10px] font-bold text-gray-500 border border-gray-100">
                           +{order.orderItems.length - 4}
                        </div>
                      )}
@@ -142,16 +131,14 @@ export default function OrdersPage() {
              ))}
           </div>
         ) : (
-          <div className="flex flex-col items-center justify-center py-32 text-center glass rounded-[3rem] border-white/20">
-             <div className="w-24 h-24 bg-indigo-50 rounded-full flex items-center justify-center mb-8">
-                <ShoppingBag className="w-10 h-10 text-indigo-500/20" />
-             </div>
-             <h2 className="text-3xl font-black mb-4 tracking-tighter">Your logistics tray is empty</h2>
-             <p className="text-secondary font-medium max-w-sm mx-auto mb-10 leading-relaxed">
-               Secure your first shipment from our curated discovery engine to initialize tracking.
+          <div className="flex flex-col items-center justify-center py-24 text-center bg-gray-50 border border-gray-100">
+             <ShoppingBag className="w-8 h-8 text-gray-300 mb-6" strokeWidth={1.5} />
+             <h2 className="text-xl font-medium mb-2 text-black">No orders yet</h2>
+             <p className="text-sm text-gray-500 max-w-sm mx-auto mb-8">
+               When you place an order, it will appear here.
              </p>
-             <Link href="/products" className="btn-wow">
-               Initialize Discovery
+             <Link href="/products" className="text-sm font-semibold border-b border-black text-black pb-0.5">
+               Start Shopping
              </Link>
           </div>
         )}

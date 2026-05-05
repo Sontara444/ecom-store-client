@@ -2,45 +2,32 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Sparkles, Globe, Mail, ArrowRight } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 
 const Footer = () => {
   return (
-    <footer className="bg-white border-t border-slate-100 pt-20 pb-10">
+    <footer className="bg-white border-t border-gray-100 pt-24 pb-12">
       <div className="max-w-7xl mx-auto px-6 md:px-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-20">
           {/* Brand */}
           <div className="space-y-6">
-            <Link href="/" className="group flex items-center space-x-2 inline-block">
-              <div className="bg-primary p-2 rounded-xl group-hover:rotate-12 transition-transform">
-                <Sparkles className="w-5 h-5 text-white" />
-              </div>
-              <span className="text-xl font-black tracking-tighter text-foreground group-hover:text-primary transition-colors">
-                SHOP<span className="text-primary">MODERN</span>
-              </span>
+            <Link href="/" className="inline-block text-2xl font-bold tracking-tight text-black hover:opacity-70 transition-opacity">
+              SHOPMODERN.
             </Link>
-            <p className="text-secondary font-medium leading-relaxed text-sm">
-              Elevating your digital lifestyle with premium, curated artifacts designed for the modern aesthetic.
+            <p className="text-gray-500 font-medium leading-relaxed text-sm">
+              Premium, curated artifacts designed for the modern aesthetic. Elevate your everyday.
             </p>
-            <div className="flex space-x-4">
-              <a href="#" className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-secondary hover:bg-primary hover:text-white transition-all">
-                <Globe className="w-4 h-4" />
-              </a>
-              <a href="#" className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-secondary hover:bg-pink-500 hover:text-white transition-all">
-                <Mail className="w-4 h-4" />
-              </a>
-            </div>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h3 className="text-xs font-black uppercase tracking-widest text-foreground mb-6">Navigation</h3>
+            <h3 className="text-xs font-bold uppercase tracking-widest text-black mb-6">Navigation</h3>
             <ul className="space-y-4">
-              {['Products', 'Featured Collections', 'Our Narrative', 'Customer Identity'].map((item) => (
+              {['Shop', 'Collections', 'Editorial', 'Account'].map((item) => (
                 <li key={item}>
-                  <Link 
-                    href={item === 'Our Narrative' ? '/about' : '/products'} 
-                    className="text-secondary hover:text-primary text-sm font-medium transition-colors"
+                  <Link
+                    href={item === 'Editorial' ? '/about' : '/products'}
+                    className="text-gray-500 hover:text-black text-sm font-medium transition-colors"
                   >
                     {item}
                   </Link>
@@ -51,11 +38,11 @@ const Footer = () => {
 
           {/* Support */}
           <div>
-            <h3 className="text-xs font-black uppercase tracking-widest text-foreground mb-6">Support</h3>
+            <h3 className="text-xs font-bold uppercase tracking-widest text-black mb-6">Support</h3>
             <ul className="space-y-4">
-              {['Contact Protocol', 'Shipping Guidelines', 'Return Policy', 'FAQ'].map((item) => (
+              {['Contact Us', 'Shipping Info', 'Returns', 'FAQ'].map((item) => (
                 <li key={item}>
-                  <Link href="#" className="text-secondary hover:text-primary text-sm font-medium transition-colors">
+                  <Link href="#" className="text-gray-500 hover:text-black text-sm font-medium transition-colors">
                     {item}
                   </Link>
                 </li>
@@ -65,19 +52,19 @@ const Footer = () => {
 
           {/* Newsletter */}
           <div>
-            <h3 className="text-xs font-black uppercase tracking-widest text-foreground mb-6">Stay Synchronized</h3>
-            <p className="text-secondary font-medium text-sm mb-4">
-              Join our network for exclusive access to new artifacts and private collections.
+            <h3 className="text-xs font-bold uppercase tracking-widest text-black mb-6">Newsletter</h3>
+            <p className="text-gray-500 font-medium text-sm mb-4">
+              Join for exclusive access to new collections and drops.
             </p>
             <form className="relative group" onSubmit={(e) => e.preventDefault()}>
-              <input 
-                type="email" 
-                placeholder="identity@nexus.com" 
-                className="w-full bg-slate-50 border-0 rounded-2xl py-3 pl-4 pr-12 outline-none focus:ring-1 focus:ring-primary/20 transition-all font-medium text-sm"
+              <input
+                type="email"
+                placeholder="Email Address"
+                className="w-full bg-transparent border-b border-gray-300 py-3 pr-8 outline-none focus:border-black transition-colors font-medium text-sm text-black placeholder:text-gray-400"
               />
-              <button 
-                type="submit" 
-                className="absolute right-2 top-2 p-1.5 bg-primary text-white rounded-xl hover:scale-105 transition-transform"
+              <button
+                type="submit"
+                className="absolute right-0 top-3 text-black hover:opacity-60 transition-opacity"
               >
                 <ArrowRight className="w-4 h-4" />
               </button>
@@ -85,18 +72,16 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="h-[1px] bg-slate-100 mb-8" />
-        
-        <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-            &copy; {new Date().getFullYear()} ShopModern Ecosystem. All rights reserved.
+        <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0 pt-8 border-t border-gray-100">
+          <p className="text-xs font-medium text-gray-400">
+            &copy; {new Date().getFullYear()} ShopModern. All rights reserved.
           </p>
-          <div className="flex space-x-6">
-            <Link href="#" className="text-[10px] font-bold text-slate-400 hover:text-primary uppercase tracking-widest transition-colors">
-              Privacy Policy
+          <div className="flex space-x-8">
+            <Link href="#" className="text-xs font-medium text-gray-400 hover:text-black transition-colors">
+              Privacy
             </Link>
-            <Link href="#" className="text-[10px] font-bold text-slate-400 hover:text-primary uppercase tracking-widest transition-colors">
-              Terms of Service
+            <Link href="#" className="text-xs font-medium text-gray-400 hover:text-black transition-colors">
+              Terms
             </Link>
           </div>
         </div>

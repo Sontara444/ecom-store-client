@@ -8,7 +8,7 @@ import { loginRequest, loginSuccess, loginFail } from '@/redux/slices/authSlice'
 import { RootState } from '@/redux/store';
 import api from '@/services/api';
 import { motion } from 'framer-motion';
-import { Mail, Lock, Loader2, ArrowRight, Sparkles } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 const LoginPage = () => {
@@ -30,7 +30,7 @@ const LoginPage = () => {
     try {
       const { data } = await api.post('/auth/login', { email, password });
       dispatch(loginSuccess(data));
-      toast.success('Welcome back to the future!');
+      toast.success('Sign in successful');
     } catch (err: any) {
       const message = err.response?.data?.message || err.message;
       dispatch(loginFail(message));
@@ -39,98 +39,80 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-6 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-100 via-background to-background">
+    <div className="min-h-screen flex items-center justify-center p-6 bg-white pt-20">
       <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="w-full max-w-md"
+        className="w-full max-w-sm"
       >
-        <div className="glass rounded-[2rem] p-10 shadow-2xl border-white/50 relative overflow-hidden">
-          {/* Decorative Glow */}
-          <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 blur-3xl -z-10" />
-          
-          <div className="text-center mb-10">
-            <div className="inline-flex p-3 bg-indigo-500/10 rounded-2xl mb-4">
-              <Sparkles className="w-6 h-6 text-indigo-500" />
-            </div>
-            <h1 className="text-4xl font-black tracking-tighter mb-2">
-              SIGN <span className="text-primary">IN</span>
-            </h1>
-            <p className="text-sm font-bold text-secondary">
-              Access your premium dashboard
-            </p>
+        <div className="text-center mb-10">
+          <h1 className="text-3xl font-semibold tracking-tight mb-2 text-black">
+            Sign In
+          </h1>
+          <p className="text-sm text-gray-500 font-medium">
+            Welcome back to your account
+          </p>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="space-y-2">
+            <label className="block text-xs font-bold uppercase tracking-widest text-gray-500">
+              Email Address
+            </label>
+            <input
+              type="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full bg-transparent border-b border-gray-300 py-3 outline-none focus:border-black transition-colors font-medium text-black placeholder:text-gray-400 text-sm"
+              placeholder="name@example.com"
+            />
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <label className="block text-xs font-black uppercase tracking-widest text-secondary mb-2 ml-1">
-                Identity Email
-              </label>
-              <div className="relative group">
-                <input
-                  type="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full bg-white/50 border-2 border-slate-100 rounded-2xl py-4 pl-12 pr-4 focus:border-primary focus:bg-white transition-all outline-none text-sm font-medium"
-                  placeholder="name@example.com"
-                />
-                <Mail className="absolute left-4 top-4 text-slate-400 w-5 h-5 group-focus-within:text-primary transition-colors" />
-              </div>
+          <div className="space-y-2">
+            <div className="flex justify-between items-center">
+               <label className="block text-xs font-bold uppercase tracking-widest text-gray-500">
+                 Password
+               </label>
+               <Link
+                 href="/forgot-password"
+                 className="text-xs font-semibold text-black hover:opacity-60 transition-opacity"
+               >
+                 Forgot?
+               </Link>
             </div>
-
-            <div>
-              <label className="block text-xs font-black uppercase tracking-widest text-secondary mb-2 ml-1">
-                Access Key
-              </label>
-              <div className="relative group">
-                <input
-                  type="password"
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full bg-white/50 border-2 border-slate-100 rounded-2xl py-4 pl-12 pr-4 focus:border-primary focus:bg-white transition-all outline-none text-sm font-medium"
-                  placeholder="••••••••"
-                />
-                <Lock className="absolute left-4 top-4 text-slate-400 w-5 h-5 group-focus-within:text-primary transition-colors" />
-              </div>
-            </div>
-
-            <div className="flex items-center justify-end">
-              <Link
-                href="/forgot-password"
-                className="text-xs font-bold text-primary hover:underline underline-offset-4"
-              >
-                Reset Credentials?
-              </Link>
-            </div>
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full btn-wow py-5 flex items-center justify-center space-x-3"
-            >
-              {loading ? (
-                <Loader2 className="w-6 h-6 animate-spin" />
-              ) : (
-                <>
-                  <span>Authenticate</span>
-                  <ArrowRight className="w-5 h-5" />
-                </>
-              )}
-            </button>
-          </form>
-
-          <div className="mt-10 text-center text-sm font-bold text-secondary">
-            New here?{' '}
-            <Link
-              href="/register"
-              className="text-primary hover:underline underline-offset-4"
-            >
-              Start Registration
-            </Link>
+            <input
+              type="password"
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full bg-transparent border-b border-gray-300 py-3 outline-none focus:border-black transition-colors font-medium text-black placeholder:text-gray-400 text-sm"
+              placeholder="••••••••"
+            />
           </div>
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-black text-white py-4 text-sm font-semibold hover:bg-gray-900 transition-colors flex items-center justify-center disabled:opacity-50 mt-8"
+          >
+            {loading ? (
+              <Loader2 className="w-5 h-5 animate-spin" />
+            ) : (
+              <span>Sign In</span>
+            )}
+          </button>
+        </form>
+
+        <div className="mt-8 text-center text-sm font-medium text-gray-500">
+          Don't have an account?{' '}
+          <Link
+            href="/register"
+            className="text-black font-semibold border-b border-black pb-0.5 hover:opacity-60 transition-opacity"
+          >
+            Register
+          </Link>
         </div>
       </motion.div>
     </div>

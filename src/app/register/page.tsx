@@ -8,7 +8,7 @@ import { loginRequest, loginSuccess, loginFail } from '@/redux/slices/authSlice'
 import { RootState } from '@/redux/store';
 import api from '@/services/api';
 import { motion } from 'framer-motion';
-import { Mail, Lock, User as UserIcon, Loader2, ArrowRight, Sparkles } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 const RegisterPage = () => {
@@ -36,7 +36,7 @@ const RegisterPage = () => {
     try {
       const { data } = await api.post('/auth/register', { name, email, password });
       dispatch(loginSuccess(data));
-      toast.success('Initialize Sequence Complete. Welcome!');
+      toast.success('Registration complete. Welcome!');
     } catch (err: any) {
       const message = err.response?.data?.message || err.message;
       dispatch(loginFail(message));
@@ -45,123 +45,100 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-6 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-100 via-background to-background">
+    <div className="min-h-screen flex items-center justify-center p-6 bg-white pt-20">
       <motion.div
-        initial={{ opacity: 0, y: 30 }}
+        initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="w-full max-w-md"
+        className="w-full max-w-sm"
       >
-        <div className="glass rounded-[2rem] p-10 shadow-2xl border-white/50 relative overflow-hidden">
-          {/* Decorative Glow */}
-          <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 blur-3xl -z-10" />
-          
-          <div className="text-center mb-10">
-            <div className="inline-flex p-3 bg-indigo-500/10 rounded-2xl mb-4">
-              <Sparkles className="w-6 h-6 text-indigo-500" />
-            </div>
-            <h1 className="text-4xl font-black tracking-tighter mb-2">
-              CREATE <span className="text-indigo-500">ID</span>
-            </h1>
-            <p className="text-sm font-bold text-secondary">
-              Join the futuristic shopping ecosystem
-            </p>
+        <div className="text-center mb-10">
+          <h1 className="text-3xl font-semibold tracking-tight mb-2 text-black">
+            Create Account
+          </h1>
+          <p className="text-sm text-gray-500 font-medium">
+            Join the ShopModern community
+          </p>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="space-y-2">
+            <label className="block text-xs font-bold uppercase tracking-widest text-gray-500">
+              Full Name
+            </label>
+            <input
+              type="text"
+              required
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="w-full bg-transparent border-b border-gray-300 py-3 outline-none focus:border-black transition-colors font-medium text-black placeholder:text-gray-400 text-sm"
+              placeholder="John Doe"
+            />
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-             <div>
-              <label className="block text-xs font-black uppercase tracking-widest text-secondary mb-1 ml-1">
-                Full Name
-              </label>
-              <div className="relative group">
-                <input
-                  type="text"
-                  required
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="w-full bg-white/50 border-2 border-slate-100 rounded-2xl py-3.5 pl-12 pr-4 focus:border-primary focus:bg-white transition-all outline-none text-sm font-medium"
-                  placeholder="John Doe"
-                />
-                <UserIcon className="absolute left-4 top-3.5 text-slate-400 w-5 h-5 group-focus-within:text-primary transition-colors" />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-xs font-black uppercase tracking-widest text-secondary mb-1 ml-1">
-                Email Address
-              </label>
-              <div className="relative group">
-                <input
-                  type="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full bg-white/50 border-2 border-slate-100 rounded-2xl py-3.5 pl-12 pr-4 focus:border-primary focus:bg-white transition-all outline-none text-sm font-medium"
-                  placeholder="name@example.com"
-                />
-                <Mail className="absolute left-4 top-3.5 text-slate-400 w-5 h-5 group-focus-within:text-primary transition-colors" />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-xs font-black uppercase tracking-widest text-secondary mb-1 ml-1">
-                Access Key
-              </label>
-              <div className="relative group">
-                <input
-                  type="password"
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full bg-white/50 border-2 border-slate-100 rounded-2xl py-3.5 pl-12 pr-4 focus:border-primary focus:bg-white transition-all outline-none text-sm font-medium"
-                  placeholder="••••••••"
-                />
-                <Lock className="absolute left-4 top-3.5 text-slate-400 w-5 h-5 group-focus-within:text-primary transition-colors" />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-xs font-black uppercase tracking-widest text-secondary mb-1 ml-1">
-                Confirm Key
-              </label>
-              <div className="relative group">
-                <input
-                  type="password"
-                  required
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="w-full bg-white/50 border-2 border-slate-100 rounded-2xl py-3.5 pl-12 pr-4 focus:border-primary focus:bg-white transition-all outline-none text-sm font-medium"
-                  placeholder="••••••••"
-                />
-                <Lock className="absolute left-4 top-3.5 text-slate-400 w-5 h-5 group-focus-within:text-primary transition-colors" />
-              </div>
-            </div>
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full btn-wow py-5 mt-4 flex items-center justify-center space-x-3"
-            >
-              {loading ? (
-                <Loader2 className="w-6 h-6 animate-spin" />
-              ) : (
-                <>
-                  <span>Initialize Account</span>
-                  <ArrowRight className="w-5 h-5" />
-                </>
-              )}
-            </button>
-          </form>
-
-          <div className="mt-8 text-center text-sm font-bold text-secondary">
-            Already a member?{' '}
-            <Link
-              href="/login"
-              className="text-primary hover:underline underline-offset-4"
-            >
-              Authorize Access
-            </Link>
+          <div className="space-y-2">
+            <label className="block text-xs font-bold uppercase tracking-widest text-gray-500">
+              Email Address
+            </label>
+            <input
+              type="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full bg-transparent border-b border-gray-300 py-3 outline-none focus:border-black transition-colors font-medium text-black placeholder:text-gray-400 text-sm"
+              placeholder="name@example.com"
+            />
           </div>
+
+          <div className="space-y-2">
+            <label className="block text-xs font-bold uppercase tracking-widest text-gray-500">
+              Password
+            </label>
+            <input
+              type="password"
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full bg-transparent border-b border-gray-300 py-3 outline-none focus:border-black transition-colors font-medium text-black placeholder:text-gray-400 text-sm"
+              placeholder="••••••••"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label className="block text-xs font-bold uppercase tracking-widest text-gray-500">
+              Confirm Password
+            </label>
+            <input
+              type="password"
+              required
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              className="w-full bg-transparent border-b border-gray-300 py-3 outline-none focus:border-black transition-colors font-medium text-black placeholder:text-gray-400 text-sm"
+              placeholder="••••••••"
+            />
+          </div>
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-black text-white py-4 text-sm font-semibold hover:bg-gray-900 transition-colors flex items-center justify-center disabled:opacity-50 mt-8"
+          >
+            {loading ? (
+              <Loader2 className="w-5 h-5 animate-spin" />
+            ) : (
+              <span>Create Account</span>
+            )}
+          </button>
+        </form>
+
+        <div className="mt-8 text-center text-sm font-medium text-gray-500">
+          Already have an account?{' '}
+          <Link
+            href="/login"
+            className="text-black font-semibold border-b border-black pb-0.5 hover:opacity-60 transition-opacity"
+          >
+            Sign In
+          </Link>
         </div>
       </motion.div>
     </div>
